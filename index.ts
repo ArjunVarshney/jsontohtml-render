@@ -1,13 +1,13 @@
 import { JsonToHtmlOptionType } from './src/types';
 import { defaultStyles } from './src/default';
 
-let number = 0;
+let num = 0;
 
 const tags = {
   div: (data: string, style?: string): string => `<div ${style ? `style="${style}"` : ''}>${data}</div>`,
   span: (data: string, style?: string): string => `<span ${style ? `style="${style}"` : ''}>${data}</span>`,
   br: () => `<br>`,
-  code: (data: Function | string, styles: JsonToHtmlOptionType, style?: string) =>
+  code: (data: (...args: any[]) => any | string, styles: JsonToHtmlOptionType, style?: string) =>
     `<pre style="
     margin: 0 0 0 0;
     display:inline;
@@ -26,7 +26,7 @@ const tags = {
     font-size:calc(${styles.fontSize} - 1px);
     translate: -100% 1px;
       ${style || ''}"
-      >${++number}</span>`
+      >${++num}</span>`
       : '',
   curlyBrace: (data: string, styles: JsonToHtmlOptionType) =>
     `<span style="
@@ -65,7 +65,7 @@ const parseOperations = {
   object: (data: object, styles: JsonToHtmlOptionType): string => {
     if (Object.entries(data).length === 0) return tags.number(styles) + tags.curlyBrace('{}', styles);
 
-    let html = tags.number(styles) + tags.curlyBrace('{', styles);
+    const html = tags.number(styles) + tags.curlyBrace('{', styles);
 
     let values = '';
     for (const [key, value] of Object.entries(data)) {
@@ -136,14 +136,14 @@ const parseOperations = {
   undefined: (styles: JsonToHtmlOptionType): string => {
     return tags.span('undefined', `color:${styles.colors!.values!.undefined};`);
   },
-  function: (data: Function, styles: JsonToHtmlOptionType) => {
+  function: (data: (...args: any[]) => any, styles: JsonToHtmlOptionType) => {
     return tags.code(data, styles);
   },
   null: (styles: JsonToHtmlOptionType): string => {
     return tags.span('null', `color:${styles.colors!.values!.null};`);
   },
   other: (data: any, styles: JsonToHtmlOptionType) => {
-    return tags.code(JSON.stringify(data), styles);
+    return tags.div(JSON.stringify(data), `color:${styles.colors!.values!.function}`);
   },
 };
 
@@ -151,8 +151,8 @@ const parseJson = (data: any, styles: JsonToHtmlOptionType, addNumber?: boolean)
   if (typeof data === 'object' && data instanceof Object && !(data instanceof Array))
     return parseOperations.object(data, styles);
   else if (typeof data === 'object' && data instanceof Array) {
-    let html =
-      `${styles.line_numbers!.show && (number === 0 || addNumber) ? tags.number(styles) : ''}` +
+    const html =
+      `${styles.line_numbers!.show && (num === 0 || addNumber) ? tags.number(styles) : ''}` +
       parseOperations.array(data, styles);
     return html;
   } else if (typeof data === 'string') return parseOperations.string(data, styles);
@@ -166,7 +166,7 @@ const parseJson = (data: any, styles: JsonToHtmlOptionType, addNumber?: boolean)
 };
 
 export function jsontohtml(data: any, options?: JsonToHtmlOptionType): string {
-  number = 0;
+  num = 0;
   const styles: JsonToHtmlOptionType = {
     ...defaultStyles,
     ...options,
