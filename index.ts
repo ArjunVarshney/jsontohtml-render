@@ -255,7 +255,7 @@ export function jsontohtml(data: any, options?: JsonToHtmlOptionType): string {
   <div style="
   position:relative;
   min-width:fit-content;
-  line-height:unset;
+  line-height:calc(${styles.fontSize!} + 2px);
   padding-left:${styles.space_from_left};
   background:${styles.colors!.background};
   font-size:${styles.fontSize} !important;

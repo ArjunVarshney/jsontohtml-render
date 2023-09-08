@@ -1,6 +1,6 @@
 {
   "name": "jsontohtml-render",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "json formatter, json previewer",
   "main": "./build/index.js",
   "scripts": {
