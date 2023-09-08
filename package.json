@@ -5,7 +5,9 @@
   "main": "./build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "npm run build:build && npm run build:dist",
+    "build:build": "tsc --project tsconfig.build.json",
+    "build:dist": "tsc --project tsconfig.dist.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
