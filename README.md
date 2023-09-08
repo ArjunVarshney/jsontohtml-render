@@ -16,6 +16,7 @@ npm install jsontohtml-render
 - [Usage](#usage)
   - [Usage Example](#usage-examples)
 - [Options](#options)
+  - [Options Usage Example](#options-usage-examples)
   - [Option type definition](#type-declaration-of-the-options-property-of-type-jsontohtmloptiontype)
   - [Option default values](#default-values)
   - [Description of all the options available](#description-of-the-options)
@@ -73,9 +74,7 @@ export default function Home() {
 
   const makeRequest = async (url: string) => {
     const result = await axios.get(url);
-
-    // because react and next do not allow script tags, retractors cannot be used
-    setHtml(jsontohtml(result.data, { retractors: { show: false } }));
+    setHtml(jsontohtml(result.data));
   };
 
   useEffect(() => {
@@ -93,6 +92,59 @@ export default function Home() {
 ## Options
 
 The html preview of the object can be fully customized with the options property.
+
+### Options usage examples
+
+- For increasing the font size, you also need to change the spacing (for better formatting):
+
+```js
+jsontohtml(data, {
+  fontSize: '25px',
+  space: '40px',
+  space_from_left: '80px',
+  line_numbers: { space_from_left: '50px' },
+  retractors: { space_from_left: '60px' },
+});
+```
+
+- You can change visibility of any components:
+
+```js
+jsontohtml(data, {
+  line_numbers: { show: false },
+
+  // for better formatting
+  space_from_left: '20px',
+  retractors: { space_from_left: '5px' },
+});
+```
+
+- For changing colors:
+
+```js
+jsontohtml(data, {
+  colors: {
+    background: 'white',
+    keys: 'red',
+    values: {
+      string: 'green',
+      number: '#FFA500',
+      comma_colon_quotes: '#9c9c9c',
+    },
+  },
+  bracket_pair_lines: { color: '#bcbcbc' },
+});
+```
+
+- For disabling links:
+
+```js
+jsontohtml(data, {
+  links: false,
+});
+```
+
+For description of all the options read the blocks ahead.
 
 ### Type declaration of the options property (of type JsonToHtmlOptionType):
 
@@ -119,6 +171,11 @@ export interface JsonToHtmlOptionType {
       comma_colon_quotes?: string;
     };
   };
+  comments?: {
+    show?: boolean;
+    color?: string;
+    space_from_left?: string;
+  };
   line_numbers?: {
     show?: boolean;
     color?: string;
@@ -143,8 +200,9 @@ export interface JsonToHtmlOptionType {
 ```ts
 export const defaultStyles: JsonToHtmlOptionType = {
   fontSize: '14px',
+  font: "'Lucida Console', monospace",
   space: '25px',
-  space_from_left: '20px',
+  space_from_left: '50px',
   links: true,
   colors: {
     background: 'black',
@@ -162,24 +220,28 @@ export const defaultStyles: JsonToHtmlOptionType = {
       comma_colon_quotes: '#FFFFFF',
     },
   },
+  comments: {
+    show: true,
+    color: 'gray',
+    space_from_left: '35px',
+  },
   retractors: {
     show: true,
     color: '#8c8c8c',
-    space_from_left: '-5px',
+    space_from_left: '37px',
   },
   line_numbers: {
     show: true,
     color: '#5c749c',
-    space_from_left: '40px',
+    space_from_left: '30px',
   },
   bracket_pair_lines: {
     show: true,
-    color: '#5c5c5c',
+    color: '#3c3c3c',
     space_from_left: '6px',
     type: 'solid',
   },
 };
-// Note: Other values like "font" is left to browser default
 ```
 
 ### Description of the options:
@@ -255,6 +317,20 @@ export const defaultStyles: JsonToHtmlOptionType = {
     - comma_colon_quotes: To change the color of all the commas, colons and quotes
 
       `example values: "white", "#fceb4e"`
+
+- comments: To manage the visibility and styles of the comments (number of element) for each object or array
+
+  - show: If "false it will not show the comments
+
+    `It should contain a boolean value (i.e. true or false)`
+
+  - color: To change the color of the comments
+
+    `example values: "orange", "#fceb4e"`
+
+  - space_from_left: To change the space between closing backets and the comment
+
+    `example values: "2rem", "20px"`
 
 - line_numbers: To manage the visibility and styles of the line numbers on the lefside.
 

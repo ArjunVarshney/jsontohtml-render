@@ -6,6 +6,20 @@ let num = 0;
 const tags = {
   div: (data: string, style?: string): string => `<div ${style ? `style="${style}"` : ''}>${data}</div>`,
   span: (data: string, style?: string): string => `<span ${style ? `style="${style}"` : ''}>${data}</span>`,
+  comment: (data: string, styles: JsonToHtmlOptionType): string =>
+    styles.comments!.show
+      ? `<i style="
+    color:${styles.comments!.color};
+    position:absolute;
+    margin-left:${styles.comments!.space_from_left};
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    ">${data}</i>`
+      : '',
   br: () => `<br>`,
   code: (data: (...args: any[]) => any | string, styles: JsonToHtmlOptionType, style?: string) =>
     `<pre style="
@@ -25,6 +39,12 @@ const tags = {
     background:${styles.colors!.background!};
     font-size:calc(${styles.fontSize} - 1px);
     translate: -100% 1px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
       ${style || ''}"
       >${++num}</span>`
       : '',
@@ -46,18 +66,34 @@ const tags = {
       ? `<button style="
         color:${styles.retractors!.color};
         position:absolute;
-        left: calc(${styles.line_numbers!.space_from_left} + ${styles.retractors!.space_from_left} + ${
-          styles.line_numbers!.show ? styles.fontSize : '0px'
-        });
-        translate:0 -${styles.fontSize};
+        left:${styles.retractors!.space_from_left};
+        translate:0 -${styles.fontSize!};
         background: ${styles.colors!.background};
 	      border: none;
 	      padding: 0;
 	      outline: inherit;
         overflow: hidden;
         font-size: ${styles.fontSize};
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         "
-        onclick="jsontohtmlClose(this)">▾</button>`
+        onclick="(function(e){
+          const entries = e.target.parentElement.querySelector('div');
+          if(entries.style.display === 'block' || entries.style.display === ''){
+            entries.style.display = 'none';
+            e.target.parentElement.style.display = 'inline-block'
+            e.target.innerText = '▾';
+          }else {
+            entries.style.display = 'block';
+            e.target.parentElement.style.display = 'block'
+            e.target.innerText = '▴';
+          }
+        return false;
+        })(arguments[0]);return false;">▴</button>`
       : '',
 };
 
@@ -94,7 +130,8 @@ const parseOperations = {
         }`,
       ) +
       tags.number(styles) +
-      tags.curlyBrace('}', styles)
+      tags.curlyBrace('}', styles) +
+      tags.comment(` // ${Object.entries(data).length} entries`, styles)
     );
   },
   array: (data: any[], styles: JsonToHtmlOptionType): string => {
@@ -109,6 +146,7 @@ const parseOperations = {
         `padding-left:${styles.space!};`,
       );
     }
+
     return (
       tags.squareBrace('[', styles) +
       tags.div(
@@ -121,7 +159,8 @@ const parseOperations = {
         }`,
       ) +
       tags.number(styles) +
-      tags.squareBrace(']', styles)
+      tags.squareBrace(']', styles) +
+      tags.comment(` // ${data.length} elements`, styles)
     );
   },
   string: (data: string, styles: JsonToHtmlOptionType): string => {
@@ -151,16 +190,27 @@ const parseJson = (data: any, styles: JsonToHtmlOptionType, addNumber?: boolean)
   if (typeof data === 'object' && data instanceof Object && !(data instanceof Array))
     return parseOperations.object(data, styles);
   else if (typeof data === 'object' && data instanceof Array) {
-    const html =
-      `${styles.line_numbers!.show && (num === 0 || addNumber) ? tags.number(styles) : ''}` +
-      parseOperations.array(data, styles);
+    const html = `${num === 0 || addNumber ? tags.number(styles) : ''}` + parseOperations.array(data, styles);
     return html;
-  } else if (typeof data === 'string') return parseOperations.string(data, styles);
-  else if (typeof data === 'object' && JSON.stringify(data) === 'null') return parseOperations.null(styles);
-  else if (typeof data === 'number') return parseOperations.number(data, styles);
-  else if (typeof data === 'boolean') return parseOperations.boolean(data, styles);
-  else if (typeof data === 'undefined') return parseOperations.undefined(styles);
-  else if (typeof data === 'function') return parseOperations.function(data, styles);
+  } else if (typeof data === 'string') {
+    const html = `${num === 0 ? tags.number(styles) : ''}` + parseOperations.string(data, styles);
+    return html;
+  } else if (typeof data === 'object' && JSON.stringify(data) === 'null') {
+    const html = `${num === 0 ? tags.number(styles) : ''}` + parseOperations.null(styles);
+    return html;
+  } else if (typeof data === 'number') {
+    const html = `${num === 0 ? tags.number(styles) : ''}` + parseOperations.number(data, styles);
+    return html;
+  } else if (typeof data === 'boolean') {
+    const html = `${num === 0 ? tags.number(styles) : ''}` + parseOperations.boolean(data, styles);
+    return html;
+  } else if (typeof data === 'undefined') {
+    const html = `${num === 0 ? tags.number(styles) : ''}` + parseOperations.undefined(styles);
+    return html;
+  } else if (typeof data === 'function') {
+    const html = `${num === 0 ? tags.number(styles) : ''}` + parseOperations.function(data, styles);
+    return html;
+  }
 
   return parseOperations.other(data, styles);
 };
@@ -173,6 +223,10 @@ export function jsontohtml(data: any, options?: JsonToHtmlOptionType): string {
     colors: {
       ...defaultStyles.colors,
       ...options?.colors,
+    },
+    comments: {
+      ...defaultStyles.comments,
+      ...options?.comments,
     },
     line_numbers: {
       ...defaultStyles.line_numbers,
@@ -199,36 +253,13 @@ export function jsontohtml(data: any, options?: JsonToHtmlOptionType): string {
   return `
   <div style="
   position:relative;
-  ${
-    styles.line_numbers
-      ? `padding-left:calc(${styles.space_from_left!} + ${styles.line_numbers!.space_from_left} + ${
-          styles.retractors!.space_from_left
-        } + ${styles.line_numbers!.show ? styles.fontSize : '0px'});`
-      : ''
-  }
+  padding-left:${styles.space_from_left};
   background:${styles.colors!.background};
-  font-size:${styles.fontSize};
+  font-size:${styles.fontSize} !important;
   ${styles.font ? `font-family:${styles.font}` : ''}
   ">
   ${parseJson(data, styles)}
   </div>
-  ${
-    styles.retractors!.show
-      ? `<script>
-    const jsontohtmlClose = (element)=>{
-      const parent = element.parentElement;
-      const dataTag = parent.querySelector("div");
-      if(dataTag.style.display === "block" || dataTag.style.display === ""){
-        dataTag.style.display = "none";
-        element.innerText = "▴";
-      }else {
-        dataTag.style.display = "block";
-        element.innerText = "▾";
-      }
-    }
-  </script>`
-      : ''
-  }
   `.replace(
     /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/g,
     `${

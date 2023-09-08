@@ -20,6 +20,11 @@ export interface JsonToHtmlOptionType {
       comma_colon_quotes?: string;
     };
   };
+  comments?: {
+    show?: boolean;
+    color?: string;
+    space_from_left?: string;
+  };
   line_numbers?: {
     show?: boolean;
     color?: string;

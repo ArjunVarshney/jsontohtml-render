@@ -2,8 +2,9 @@ import { JsonToHtmlOptionType } from './types';
 
 export const defaultStyles: JsonToHtmlOptionType = {
   fontSize: '14px',
+  font: "'Lucida Console', monospace",
   space: '25px',
-  space_from_left: '20px',
+  space_from_left: '50px',
   links: true,
   colors: {
     background: 'black',
@@ -21,19 +22,24 @@ export const defaultStyles: JsonToHtmlOptionType = {
       comma_colon_quotes: '#FFFFFF',
     },
   },
+  comments: {
+    show: true,
+    color: 'gray',
+    space_from_left: '35px',
+  },
   retractors: {
     show: true,
     color: '#8c8c8c',
-    space_from_left: '-5px',
+    space_from_left: '37px',
   },
   line_numbers: {
     show: true,
     color: '#5c749c',
-    space_from_left: '40px',
+    space_from_left: '30px',
   },
   bracket_pair_lines: {
     show: true,
-    color: '#5c5c5c',
+    color: '#3c3c3c',
     space_from_left: '6px',
     type: 'solid',
   },
