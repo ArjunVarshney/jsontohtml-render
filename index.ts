@@ -12,6 +12,7 @@ const tags = {
     color:${styles.comments!.color};
     position:absolute;
     margin-left:${styles.comments!.space_from_left};
+    width:100%;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -253,6 +254,8 @@ export function jsontohtml(data: any, options?: JsonToHtmlOptionType): string {
   return `
   <div style="
   position:relative;
+  min-width:fit-content;
+  line-height:unset;
   padding-left:${styles.space_from_left};
   background:${styles.colors!.background};
   font-size:${styles.fontSize} !important;

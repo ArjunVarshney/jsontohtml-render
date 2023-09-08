@@ -1,7 +1,7 @@
 {
   "name": "jsontohtml-render",
-  "version": "1.0.0",
-  "description": "Do multile pdf operations with one package",
+  "version": "1.0.2",
+  "description": "json formatter, json previewer",
   "main": "./build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -40,6 +40,8 @@
   },
   "keywords": [
     "json to html",
+    "json formatter",
+    "json-formatter",
     "object to html",
     "object visualizer",
     "object-visualizer",
