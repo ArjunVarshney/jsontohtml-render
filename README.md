@@ -10,6 +10,12 @@ You can install "jsontohtml-render" via npm:
 npm install jsontohtml-render
 ```
 
+or You can use it as in html:-
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/ArjunVarshney/jsontohtml-render@latest/dist/index.js"></script>
+```
+
 ## Table of contents
 
 - [Features](#features)
@@ -48,6 +54,7 @@ console.log(jsontohtml({ hello: 'moto' }));
 import { jsontohtml } from 'jsontohtml-render';
 
 export default function Home() {
+  // use it as show below
   const html = jsontohtml({
     hello: ['this', 'is', 'some', 'text'],
     arrayofobjects: [{ something: [1, 2, 3] }, {}],
@@ -59,6 +66,34 @@ export default function Home() {
 
 `Output of the code:`
 ![output](/images/sample-image.png)
+
+- Use it in html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <!-- Add a script file -->
+    <script src="https://cdn.jsdelivr.net/gh/ArjunVarshney/jsontohtml-render@latest/dist/index.js"></script>
+    <!-- Add a script file as above -->
+  </head>
+
+  <body>
+    <div id="json"></div>
+    <script>
+      // Use it to update html as follows
+      document.getElementById('json').innerHTML = jsontohtml({ hello: 'moto' });
+    </script>
+  </body>
+</html>
+```
+
+`Output of the code (using live server)`:
+![Sample image](./images/sample-image3.png)
 
 - Use it to print the result of an api request:
 
@@ -74,6 +109,8 @@ export default function Home() {
 
   const makeRequest = async (url: string) => {
     const result = await axios.get(url);
+
+    // Set the html as follows
     setHtml(jsontohtml(result.data));
   };
 
