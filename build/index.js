@@ -1,7 +1,50 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.jsontohtml = void 0;
-const default_1 = require("./src/default");
+const defaultStyles = {
+    fontSize: '14px',
+    font: "'Lucida Console', monospace",
+    space: '25px',
+    space_from_left: '50px',
+    links: true,
+    colors: {
+        background: 'black',
+        keys: '#d54e50',
+        values: {
+            number: '#FF8811',
+            string: '#b9ba1f',
+            boolean: '#EDA2F2',
+            function: '#FFC43D',
+            undefined: '#06D6A0',
+            null: '#B3B7EE',
+            other: '#FFC43D',
+            curly_brace: '#FFFFFF',
+            square_brace: '#FFFFFF',
+            comma_colon_quotes: '#FFFFFF',
+        },
+    },
+    comments: {
+        show: true,
+        color: 'gray',
+        space_from_left: '35px',
+    },
+    retractors: {
+        show: true,
+        color: '#8c8c8c',
+        space_from_left: '37px',
+    },
+    line_numbers: {
+        show: true,
+        color: '#5c749c',
+        space_from_left: '30px',
+    },
+    bracket_pair_lines: {
+        show: true,
+        color: '#3c3c3c',
+        space_from_left: '6px',
+        type: 'solid',
+    },
+};
 let num = 0;
 const tags = {
     div: (data, style) => `<div ${style ? `style="${style}"` : ''}>${data}</div>`,
@@ -189,7 +232,7 @@ const parseJson = (data, styles, addNumber) => {
 };
 function jsontohtml(data, options) {
     num = 0;
-    const styles = Object.assign(Object.assign(Object.assign({}, default_1.defaultStyles), options), { colors: Object.assign(Object.assign({}, default_1.defaultStyles.colors), options === null || options === void 0 ? void 0 : options.colors), comments: Object.assign(Object.assign({}, default_1.defaultStyles.comments), options === null || options === void 0 ? void 0 : options.comments), line_numbers: Object.assign(Object.assign({}, default_1.defaultStyles.line_numbers), options === null || options === void 0 ? void 0 : options.line_numbers), retractors: Object.assign(Object.assign({}, default_1.defaultStyles.retractors), options === null || options === void 0 ? void 0 : options.retractors), bracket_pair_lines: Object.assign(Object.assign({}, default_1.defaultStyles.bracket_pair_lines), options === null || options === void 0 ? void 0 : options.bracket_pair_lines) });
+    const styles = Object.assign(Object.assign(Object.assign({}, defaultStyles), options), { colors: Object.assign(Object.assign({}, defaultStyles.colors), options === null || options === void 0 ? void 0 : options.colors), comments: Object.assign(Object.assign({}, defaultStyles.comments), options === null || options === void 0 ? void 0 : options.comments), line_numbers: Object.assign(Object.assign({}, defaultStyles.line_numbers), options === null || options === void 0 ? void 0 : options.line_numbers), retractors: Object.assign(Object.assign({}, defaultStyles.retractors), options === null || options === void 0 ? void 0 : options.retractors), bracket_pair_lines: Object.assign(Object.assign({}, defaultStyles.bracket_pair_lines), options === null || options === void 0 ? void 0 : options.bracket_pair_lines) });
     styles.retractors.space_from_left = styles.retractors.show ? styles.retractors.space_from_left : '0px';
     styles.line_numbers.space_from_left = styles.line_numbers.show ? styles.line_numbers.space_from_left : '0px';
     styles.bracket_pair_lines.space_from_left = styles.bracket_pair_lines.show
