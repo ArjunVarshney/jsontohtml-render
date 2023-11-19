@@ -186,13 +186,20 @@ const tags = {
 };
 
 const parseOperations = {
-  object: (data: object, styles: JsonToHtmlOptionType): string => {
+  object: (data: { [key: string]: any }, styles: JsonToHtmlOptionType): string => {
     if (Object.entries(data).length === 0) return tags.number(styles) + tags.curlyBrace('{}', styles);
 
     const html = tags.number(styles) + tags.curlyBrace('{', styles);
 
     let values = '';
-    for (const [key, value] of Object.entries(data)) {
+    const keys = Object.keys(data);
+
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const value = data[key];
+
+      const isLastItem = i === keys.length - 1;
+
       values +=
         (!(value instanceof Object) || value instanceof Array ? tags.number(styles) : '') +
         tags.div(
@@ -201,7 +208,7 @@ const parseOperations = {
             tags.comma_colon_quotes('"', styles) +
             tags.comma_colon_quotes(':', styles) +
             parseJson(value, styles) +
-            tags.comma_colon_quotes(',', styles),
+            (isLastItem ? '' : tags.comma_colon_quotes(',', styles)),
           `padding-left:${styles.space!}`,
         );
     }
@@ -228,9 +235,15 @@ const parseOperations = {
     }
 
     let html = '';
-    for (const [_, value] of Object.entries(data)) {
+    const values = Object.values(data);
+    const totalValues = values.length;
+
+    for (let i = 0; i < totalValues; i++) {
+      const value = values[i];
+      const isLastValue = i === totalValues - 1;
+
       html += tags.div(
-        parseJson(value, styles, true) + tags.comma_colon_quotes(',', styles),
+        parseJson(value, styles, true) + (isLastValue ? '' : tags.comma_colon_quotes(',', styles)),
         `padding-left:${styles.space!};`,
       );
     }

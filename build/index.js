@@ -139,7 +139,11 @@ const parseOperations = {
             return tags.number(styles) + tags.curlyBrace('{}', styles);
         const html = tags.number(styles) + tags.curlyBrace('{', styles);
         let values = '';
-        for (const [key, value] of Object.entries(data)) {
+        const keys = Object.keys(data);
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            const value = data[key];
+            const isLastItem = i === keys.length - 1;
             values +=
                 (!(value instanceof Object) || value instanceof Array ? tags.number(styles) : '') +
                     tags.div(tags.comma_colon_quotes('"', styles) +
@@ -147,7 +151,7 @@ const parseOperations = {
                         tags.comma_colon_quotes('"', styles) +
                         tags.comma_colon_quotes(':', styles) +
                         parseJson(value, styles) +
-                        tags.comma_colon_quotes(',', styles), `padding-left:${styles.space}`);
+                        (isLastItem ? '' : tags.comma_colon_quotes(',', styles)), `padding-left:${styles.space}`);
         }
         return (html +
             tags.div(tags.closeButton(styles) + tags.div(values), `${styles.bracket_pair_lines.show
@@ -163,8 +167,12 @@ const parseOperations = {
             return tags.squareBrace('[]', styles);
         }
         let html = '';
-        for (const [_, value] of Object.entries(data)) {
-            html += tags.div(parseJson(value, styles, true) + tags.comma_colon_quotes(',', styles), `padding-left:${styles.space};`);
+        const values = Object.values(data);
+        const totalValues = values.length;
+        for (let i = 0; i < totalValues; i++) {
+            const value = values[i];
+            const isLastValue = i === totalValues - 1;
+            html += tags.div(parseJson(value, styles, true) + (isLastValue ? '' : tags.comma_colon_quotes(',', styles)), `padding-left:${styles.space};`);
         }
         return (tags.squareBrace('[', styles) +
             tags.div(tags.closeButton(styles) + tags.div(html), `${styles.bracket_pair_lines.show
