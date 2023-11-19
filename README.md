@@ -15,7 +15,7 @@ npm install jsontohtml-render
 or You can use it as in html:-
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ArjunVarshney/jsontohtml-render@latest/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ArjunVarshney/jsontohtml-render@main/dist/index.js"></script>
 ```
 
 ## Table of contents
@@ -80,7 +80,7 @@ export default function Home() {
     <title>Document</title>
 
     <!-- Add a script file -->
-    <script src="https://cdn.jsdelivr.net/gh/ArjunVarshney/jsontohtml-render@latest/dist/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ArjunVarshney/jsontohtml-render@main/dist/index.js"></script>
     <!-- Add a script file as above -->
   </head>
 
